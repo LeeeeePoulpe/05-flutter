@@ -7,3 +7,7 @@ Jeu du démineur en DART avec interface en mode texte (console)
 - bin/tp01.dart : main qui code le déroulement d'une partie
 
 Installer les packages nécessaires par **pub**
+
+```bash
+dart pub get
+```
