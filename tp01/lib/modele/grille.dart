@@ -48,16 +48,37 @@ class Grille {
   /// Retourne la liste des [Coordonnees] des voisines de la case située à [coord]
   List<Coordonnees> getVoisines(Coordonnees coord) {
     List<Coordonnees> listeVoisines = [];
-    // A compléter
+
+    for (int ligne = coord.ligne - 1; ligne <= coord.ligne + 1; ligne++) {
+      for (int colonne = coord.colonne - 1;
+          colonne <= coord.colonne + 1;
+          colonne++) {
+        if (ligne >= 0 && ligne < taille && colonne >= 0 && colonne < taille) {
+          if (ligne != coord.ligne || colonne != coord.colonne) {
+            listeVoisines.add((colonne: colonne, ligne: ligne));
+          }
+        }
+      }
+    }
+
     return listeVoisines;
   }
 
   /// Assigne à chaque [Case] le nombre de mines présentes dans ses voisines
   void calculeNbMinesAutour() {
-    // A Corriger
     for (int lig = 0; lig < taille; lig++) {
       for (int col = 0; col < taille; col++) {
-        _grille[lig][col].nbMinesAutour = 0;
+        int nbMines = 0;
+        final coord = (ligne: lig, colonne: col); // Création du record
+
+        // Parcourir toutes les cases voisines
+        for (final voisine in getVoisines(coord)) {
+          if (getCase(voisine).minee) {
+            nbMines++;
+          }
+        }
+
+        _grille[lig][col].nbMinesAutour = nbMines;
       }
     }
   }
@@ -65,29 +86,63 @@ class Grille {
   /// - Découvre récursivement toutes les cases voisines d'une case située à [coord]
   /// - La case située à [coord] doit être découverte
   void decouvrirVoisines(Coordonnees coord) {
-    // A Compléter
+    for (final voisin in getVoisines(coord)) {
+      Case c = getCase(voisin);
+      if (c.etat == Etat.couverte) {
+        c.decouvrir();
+        if (!c.minee && c.nbMinesAutour == 0) {
+          decouvrirVoisines(voisin);
+        }
+      }
+    }
   }
 
   /// Met à jour la Grille en fonction du [coup] joué
   void mettreAJour(Coup coup) {
-    // A Compléter
+    final maCase = getCase(coup.coordonnees);
+
+    switch (coup.action) {
+      case Action.decouvrir:
+        maCase.decouvrir();
+        // Si la case n'est pas minée et n'a pas de mines autour, on découvre les voisines
+        if (!maCase.minee && maCase.nbMinesAutour == 0) {
+          decouvrirVoisines(coup.coordonnees);
+        }
+        break;
+      case Action.marquer:
+        maCase.inverserMarque();
+        break;
+    }
   }
 
   /// Renvoie vrai si [Grille] ne comporte que des cases soit minées soit découvertes (mais pas les 2)
   bool isGagnee() {
-    // A Corriger
-    return false;
+    for (final ligne in _grille) {
+      for (final maCase in ligne) {
+        if (maCase.minee && maCase.etat == Etat.decouverte) {
+          return false;
+        } else if (!maCase.minee && maCase.etat != Etat.decouverte) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   /// Renvoie vrai si [Grille] comporte au moins une case minée et découverte
   bool isPerdue() {
-    // A Corriger
+    for (final ligne in _grille) {
+      for (final maCase in ligne) {
+        if (maCase.minee && maCase.etat == Etat.decouverte) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 
   /// Renvoie vrai si la partie est finie, gagnée ou perdue
   bool isFinie() {
-    // A Corriger
-    return false;
+    return isGagnee() || isPerdue();
   }
 }
