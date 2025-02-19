@@ -3,7 +3,8 @@ import 'package:tp02/modele/modele.dart' as modele;
 
 class GrilleDemineur extends StatefulWidget {
   final int taille, nbMines;
-  const GrilleDemineur({required this.taille, required this.nbMines, super.key});
+  const GrilleDemineur(
+      {required this.taille, required this.nbMines, super.key});
   @override
   State<StatefulWidget> createState() => _GrilleDemineurState();
 }
@@ -12,18 +13,25 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
   late modele.Grille _grille;
   @override
   void initState() {
-    _grille = modele.Grille(taille:widget.taille, nbMines:widget.nbMines);
+    _grille = modele.Grille(taille: widget.taille, nbMines: widget.nbMines);
     super.initState();
   }
 
   /// construit l’interface du widget//
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(messageEtat(_grille)),
-        GridView.count(
-          shrinkWrap: true,
+    return Container(
+      margin: const EdgeInsets.all(20),
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width *
+            0.8, // 80% de la largeur de l'écran
+        maxHeight: MediaQuery.of(context).size.height *
+            0.8, // 60% de la hauteur de l'écran
+      ),
+      child: AspectRatio(
+        aspectRatio: 1.0, // Force un carré parfait
+        child: GridView.count(
+          physics: NeverScrollableScrollPhysics(), // Désactive le scroll
           crossAxisCount: widget.taille,
           children: List.generate(
             widget.taille * widget.taille,
@@ -48,7 +56,8 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(),
-                    color: caseToColor(_grille.getCase((ligne: ligne, colonne: colonne))),
+                    color: caseToColor(
+                        _grille.getCase((ligne: ligne, colonne: colonne))),
                   ),
                   child: Center(
                     child: Text(
@@ -63,7 +72,7 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
             },
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -74,12 +83,12 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
       // Si la case est marquée, on affiche "?"
       return laCase.etat == modele.Etat.marquee ? "?" : "";
     }
-    
+
     // Si la case contient une mine
     if (laCase.minee) {
       return "*";
     }
-    
+
     // Si pas de mines autour, case vide, sinon afficher le nombre
     return laCase.nbMinesAutour == 0 ? "" : "${laCase.nbMinesAutour}";
   }
