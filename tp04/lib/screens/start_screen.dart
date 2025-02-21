@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tp02/screens/game_screen.dart';
 
 class StartScreen extends StatelessWidget {
-  final void Function(int, int) startGame;
-
-  const StartScreen({
-    required this.startGame,
-    Key? key,
-  });
 
   @override
   Widget build(context) {
@@ -34,7 +29,13 @@ class StartScreen extends StatelessWidget {
             const SizedBox(height: 50),
             OutlinedButton.icon(
               onPressed: () {
-                startGame(8, 10);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GameScreen(
+                            tailleFromStartScreen: 8,
+                            nbMinesFromStartScreen: 10,
+                          )),
+                );
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -48,7 +49,13 @@ class StartScreen extends StatelessWidget {
             const SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: () {
-                startGame(12, 20);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GameScreen(
+                            tailleFromStartScreen: 12,
+                            nbMinesFromStartScreen: 20,
+                          )),
+                );
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -62,7 +69,13 @@ class StartScreen extends StatelessWidget {
             const SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: () {
-                startGame(16, 40);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GameScreen(
+                            tailleFromStartScreen: 16,
+                            nbMinesFromStartScreen: 40,
+                          )),
+                );
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,

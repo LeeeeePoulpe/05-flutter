@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:tp02/widgets/grille_demineur.dart';
 
-class GameScreen extends StatelessWidget {
-  final int taille;
-  final int nbMines;
-  final void Function(int score, double temps) endGame;
+class GameScreen extends StatefulWidget {
+  final int tailleFromStartScreen;
+  final int nbMinesFromStartScreen;
 
   const GameScreen({
-    required this.taille,
-    required this.nbMines,
-    required this.endGame,
+    required this.tailleFromStartScreen,
+    required this.nbMinesFromStartScreen,
     Key? key,
   }) : super(key: key);
+
+  @override
+  _GameScreenState createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  late int _score;
+  late double _temps;
+
+  void endGame(int score, double temps) {
+    _score = score;
+    _temps = temps;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +41,8 @@ class GameScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             GrilleDemineur(
-              taille: taille,
-              nbMines: nbMines,
+              taille: widget.tailleFromStartScreen,
+              nbMines: widget.nbMinesFromStartScreen,
             ),
           ],
         ),
