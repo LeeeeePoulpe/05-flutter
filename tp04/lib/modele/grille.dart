@@ -13,6 +13,8 @@ class Grille {
   /// Attribut privé (_), liste composée [taille] listes de chacune [taille] cases
   final List<List<Case>> _grille = [];
 
+  final Stopwatch stopwatch = Stopwatch();
+
   /// Construit une [Grille] comportant [taille] lignes, [taille] colonnes et [nbMines] mines
   Grille({required this.taille, required this.nbMines}) {
     int nbCasesACreer = nbCases; // Le nombre de cases qu'il reste à créer
@@ -35,6 +37,7 @@ class Grille {
     }
     // Les cases étant créées et les mines posées, on calcule pour chaque case le 'nombre de mines autour'
     calculeNbMinesAutour();
+    stopwatch.start(); // Démarrer le chronomètre à la création de la grille
   }
 
   /// Getter qui retourne le nombre de cases
@@ -143,6 +146,13 @@ class Grille {
 
   /// Renvoie vrai si la partie est finie, gagnée ou perdue
   bool isFinie() {
-    return isGagnee() || isPerdue();
+    bool finie = isGagnee() || isPerdue();
+    if (finie) {
+      stopwatch.stop(); // Arrêter le chronomètre quand la partie est finie
+    }
+    return finie;
   }
+
+  /// Retourne le temps écoulé en secondes
+  int get tempsEcoule => stopwatch.elapsed.inSeconds;
 }

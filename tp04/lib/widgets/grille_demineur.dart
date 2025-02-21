@@ -2,20 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:tp02/modele/modele.dart' as modele;
 
 class GrilleDemineur extends StatefulWidget {
-  final int taille, nbMines;
-  const GrilleDemineur(
-      {required this.taille, required this.nbMines, super.key});
+  final modele.Grille grille;
+  const GrilleDemineur({
+    required this.grille,
+    super.key
+    });
   @override
   State<StatefulWidget> createState() => _GrilleDemineurState();
 }
 
 class _GrilleDemineurState extends State<GrilleDemineur> {
-  late modele.Grille _grille;
-  @override
-  void initState() {
-    _grille = modele.Grille(taille: widget.taille, nbMines: widget.nbMines);
-    super.initState();
-  }
 
   /// construit l’interface du widget//
   @override
@@ -32,23 +28,23 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
         aspectRatio: 1.0, // Force un carré parfait
         child: GridView.count(
           physics: NeverScrollableScrollPhysics(), // Désactive le scroll
-          crossAxisCount: widget.taille,
+          crossAxisCount: widget.grille.taille,
           children: List.generate(
-            widget.taille * widget.taille,
+            widget.grille.taille * widget.grille.taille,
             (index) {
-              int ligne = index ~/ widget.taille;
-              int colonne = index % widget.taille;
+              int ligne = index ~/ widget.grille.taille;
+              int colonne = index % widget.grille.taille;
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    _grille.mettreAJour(
+                    widget.grille.mettreAJour(
                       modele.Coup(ligne, colonne, modele.Action.decouvrir),
                     );
                   });
                 },
                 onLongPress: () {
                   setState(() {
-                    _grille.mettreAJour(
+                    widget.grille.mettreAJour(
                       modele.Coup(ligne, colonne, modele.Action.marquer),
                     );
                   });
@@ -57,13 +53,13 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
                   decoration: BoxDecoration(
                     border: Border.all(),
                     color: caseToColor(
-                        _grille.getCase((ligne: ligne, colonne: colonne))),
+                        widget.grille.getCase((ligne: ligne, colonne: colonne))),
                   ),
                   child: Center(
                     child: Text(
                       caseToText(
-                        _grille.getCase((ligne: ligne, colonne: colonne)),
-                        _grille.isFinie(),
+                        widget.grille.getCase((ligne: ligne, colonne: colonne)),
+                        widget.grille.isFinie(),
                       ),
                     ),
                   ),

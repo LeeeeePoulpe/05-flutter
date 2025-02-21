@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tp02/screens/result_screen.dart';
 import 'package:tp02/widgets/grille_demineur.dart';
+import 'package:tp02/modele/modele.dart' as modele;
 
 class GameScreen extends StatefulWidget {
   final int tailleFromStartScreen;
@@ -18,6 +20,16 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   late int _score;
   late double _temps;
+  late modele.Grille grille;
+
+  @override
+  void initState() {
+    grille = modele.Grille(
+      taille: widget.tailleFromStartScreen,
+      nbMines: widget.nbMinesFromStartScreen,
+    );
+    super.initState();
+  }
 
   void endGame(int score, double temps) {
     _score = score;
@@ -39,11 +51,35 @@ class _GameScreenState extends State<GameScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 30),
             GrilleDemineur(
-              taille: widget.tailleFromStartScreen,
-              nbMines: widget.nbMinesFromStartScreen,
+              grille: grille,
             ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Opacity(
+                opacity: grille.isFinie() ? 1.0 : 0.0,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ResultScreen(
+                          score: _score,
+                          temps: _temps,
+                        ),
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.purple.withOpacity(0.3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  ),
+                  icon: const Icon(Icons.arrow_right_alt),
+                  label: const Text('Voir les résultats', style: TextStyle(fontSize: 18)),
+                ),
+              ),
+            )
           ],
         ),
       ),
