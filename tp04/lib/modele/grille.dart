@@ -153,6 +153,7 @@ class Grille {
     return finie;
   }
 
-  /// Retourne le temps écoulé en secondes
-  int get tempsEcoule => stopwatch.elapsed.inSeconds;
+  int getChrono() {
+    return stopwatch.elapsed.inSeconds;
+  }
 }

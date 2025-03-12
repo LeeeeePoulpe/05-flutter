@@ -18,30 +18,40 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late int _score;
-  late double _temps;
   late modele.Grille grille;
 
   @override
   void initState() {
+    super.initState();
     grille = modele.Grille(
       taille: widget.tailleFromStartScreen,
       nbMines: widget.nbMinesFromStartScreen,
     );
-    super.initState();
   }
 
-  void endGame(int score, double temps) {
-    setState(() {
-          _score = score;
-          _temps = temps;
-    });
+  // Calcule le score basé sur le temps et la difficulté
+  int _calculateScore() {
+    int baseScore = widget.nbMinesFromStartScreen * 100;
+    int chrono = grille.getChrono();
+    int timeBonus = chrono < 60 ? (60 - chrono) * 10 : 0;
+    return baseScore + timeBonus;
   }
 
-  void play(modele.Coup coup){
+  void play(modele.Coup coup) {
     setState(() {
       grille.mettreAJour(coup);
     });
+  }
+
+  String messageEtat(modele.Grille grille) {
+    if (grille.isGagnee()) {
+      return "Gagné !";
+    }
+    if (grille.isPerdue()) {
+      // return "Perdu !";
+      return _calculateScore().toString();
+    }
+    return "En cours";
   }
 
   @override
@@ -52,7 +62,7 @@ class _GameScreenState extends State<GameScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Démineur',
+              messageEtat(grille),
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 24,
@@ -68,24 +78,28 @@ class _GameScreenState extends State<GameScreen> {
               child: Opacity(
                 opacity: grille.isFinie() ? 1.0 : 0.0,
                 child: OutlinedButton.icon(
-                  onPressed: grille.isFinie() ? () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ResultScreen(
-                          score: _score,
-                          temps: _temps,
-                        ),
-                      ),
-                    );
-                  } : null,
+                  onPressed: grille.isFinie()
+                      ? () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ResultScreen(
+                                score: _calculateScore(),
+                                temps: grille.getChrono().toDouble(),
+                                message: messageEtat(grille),
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.purple.withOpacity(0.3),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
                   ),
                   icon: const Icon(Icons.arrow_right_alt),
-                  label: const Text('Voir les résultats', style: TextStyle(fontSize: 18)),
+                  label: const Text('Voir les résultats',
+                      style: TextStyle(fontSize: 18)),
                 ),
               ),
             )

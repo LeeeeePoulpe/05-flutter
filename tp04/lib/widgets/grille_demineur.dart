@@ -1,86 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:tp02/modele/modele.dart' as modele;
+import 'package:tp02/widgets/case_demineur.dart'; // Import the new CaseWidget
 
 class GrilleDemineur extends StatefulWidget {
   final modele.Grille grille;
   final Function(modele.Coup) play;
-  const GrilleDemineur({
-    required this.grille,
-    required this.play,
-    super.key
-    });
+  const GrilleDemineur({required this.grille, required this.play, super.key});
   @override
   State<StatefulWidget> createState() => _GrilleDemineurState();
 }
 
 class _GrilleDemineurState extends State<GrilleDemineur> {
+  VoidCallback blockClicks(VoidCallback callback) {
+    return widget.grille.isFinie() ? () {} : callback;
+  }
 
-  /// construit l’interface du widget//
   @override
   Widget build(BuildContext context) {
+    double caseSize =
+        MediaQuery.of(context).size.width * 0.8 / widget.grille.taille;
+
     return Container(
       margin: const EdgeInsets.all(20),
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width *
-            0.8, // 80% de la largeur de l'écran
-        maxHeight: MediaQuery.of(context).size.height *
-            0.8, // 60% de la hauteur de l'écran
+        maxWidth: MediaQuery.of(context).size.width * 0.8,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
       ),
       child: AspectRatio(
-        aspectRatio: 1.0, // Force un carré parfait
+        aspectRatio: 1.0,
         child: GridView.count(
-          physics: NeverScrollableScrollPhysics(), // Désactive le scroll
+          physics: NeverScrollableScrollPhysics(),
           crossAxisCount: widget.grille.taille,
           children: List.generate(
             widget.grille.taille * widget.grille.taille,
             (index) {
               int ligne = index ~/ widget.grille.taille;
               int colonne = index % widget.grille.taille;
-              return GestureDetector(
-                onTap: () {
-                  widget.play(modele.Coup(ligne, colonne, modele.Action.decouvrir));
-                },
-                onLongPress: () {
-                  widget.play(modele.Coup(ligne, colonne, modele.Action.marquer));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    color: caseToColor(
-                        widget.grille.getCase((ligne: ligne, colonne: colonne))),
-                  ),
-                  child: Center(
-                    child: Text(
-                      caseToText(
-                        widget.grille.getCase((ligne: ligne, colonne: colonne)),
-                        widget.grille.isFinie(),
-                      ),
-                    ),
-                  ),
-                ),
+              return CaseWidget(
+                size: caseSize,
+                cell: widget.grille.getCase((ligne: ligne, colonne: colonne)),
+                isFini: widget.grille.isFinie(),
+                onTap: blockClicks(() {
+                  widget.play(
+                      modele.Coup(ligne, colonne, modele.Action.decouvrir));
+                }),
+                onLongPress: blockClicks(() {
+                  widget.play(
+                      modele.Coup(ligne, colonne, modele.Action.marquer));
+                }),
               );
             },
           ),
         ),
       ),
     );
-  }
-
-  /// Détermine le texte à afficher dans une case en fonctiont de l’état de la partie
-  String caseToText(modele.Case laCase, bool isFini) {
-    // Si la case n'est pas découverte et le jeu n'est pas fini
-    if (laCase.etat != modele.Etat.decouverte && !isFini) {
-      // Si la case est marquée, on affiche "?"
-      return laCase.etat == modele.Etat.marquee ? "?" : "";
-    }
-
-    // Si la case contient une mine
-    if (laCase.minee) {
-      return "*";
-    }
-
-    // Si pas de mines autour, case vide, sinon afficher le nombre
-    return laCase.nbMinesAutour == 0 ? "" : "${laCase.nbMinesAutour}";
   }
 
   /// Détermine la couleur à afficher pour une case
