@@ -3,8 +3,10 @@ import 'package:tp02/modele/modele.dart' as modele;
 
 class GrilleDemineur extends StatefulWidget {
   final modele.Grille grille;
+  final Function(modele.Coup) play;
   const GrilleDemineur({
     required this.grille,
+    required this.play,
     super.key
     });
   @override
@@ -36,18 +38,10 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
               int colonne = index % widget.grille.taille;
               return GestureDetector(
                 onTap: () {
-                  setState(() {
-                    widget.grille.mettreAJour(
-                      modele.Coup(ligne, colonne, modele.Action.decouvrir),
-                    );
-                  });
+                  widget.play(modele.Coup(ligne, colonne, modele.Action.decouvrir));
                 },
                 onLongPress: () {
-                  setState(() {
-                    widget.grille.mettreAJour(
-                      modele.Coup(ligne, colonne, modele.Action.marquer),
-                    );
-                  });
+                  widget.play(modele.Coup(ligne, colonne, modele.Action.marquer));
                 },
                 child: Container(
                   decoration: BoxDecoration(

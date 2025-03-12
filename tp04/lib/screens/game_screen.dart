@@ -32,8 +32,16 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void endGame(int score, double temps) {
-    _score = score;
-    _temps = temps;
+    setState(() {
+          _score = score;
+          _temps = temps;
+    });
+  }
+
+  void play(modele.Coup coup){
+    setState(() {
+      grille.mettreAJour(coup);
+    });
   }
 
   @override
@@ -53,13 +61,14 @@ class _GameScreenState extends State<GameScreen> {
             ),
             GrilleDemineur(
               grille: grille,
+              play: play,
             ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Opacity(
                 opacity: grille.isFinie() ? 1.0 : 0.0,
                 child: OutlinedButton.icon(
-                  onPressed: () {
+                  onPressed: grille.isFinie() ? () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ResultScreen(
@@ -68,7 +77,7 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
                     );
-                  },
+                  } : null,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.purple.withOpacity(0.3),
