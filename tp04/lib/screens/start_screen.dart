@@ -24,28 +24,18 @@ class _StartScreenState extends State<StartScreen> {
     super.dispose();
   }
 
-  void _startGame(int taille, int nbMines) {
-    if (_formKey.currentState!.validate()) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => GameScreen(
-            tailleFromStartScreen: taille,
-            nbMinesFromStartScreen: nbMines,
-            // playerName: _nameController.text,
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Couleurs inspirées de Shadcn
     final backgroundColor = Colors.grey.shade50;
-    final cardColor = Colors.white;
-    final primaryColor = Color(0xFF6E56CF); // Violet Shadcn
     final textColor = Color(0xFF1A1523); // Presque noir
     final borderColor = Colors.grey.shade200;
     final secondaryTextColor = Colors.grey.shade600;
+
+    // Couleurs pour les niveaux de difficulté
+    final easyColor = Color(0xFF4ADE80); // Vert
+    final mediumColor = Color(0xFFFACC15); // Jaune
+    final hardColor = Color(0xFFF43F5E); // Rouge
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -62,14 +52,24 @@ class _StartScreenState extends State<StartScreen> {
                   children: [
                     // En-tête
                     Center(
-                      child: Text(
-                        'Démineur',
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: -0.5,
-                        ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.grid_goldenratio,
+                            size: 48,
+                            color: textColor,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Démineur',
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -97,6 +97,8 @@ class _StartScreenState extends State<StartScreen> {
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 16),
                           border: InputBorder.none,
+                          prefixIcon: Icon(Icons.person_outline,
+                              color: secondaryTextColor),
                         ),
                         style: TextStyle(color: textColor),
                         validator: (value) {
@@ -121,29 +123,32 @@ class _StartScreenState extends State<StartScreen> {
                     const SizedBox(height: 16),
 
                     // Boutons de difficulté
-                    _buildShadcnButton(
+                    _buildDifficultyButton(
                       label: 'Facile',
-                      description: '8×8 grille, 10 mines',
+                      gridSize: '8×8',
+                      mineCount: 10,
+                      color: easyColor,
                       onPressed: () => _startGame(8, 10),
-                      primaryColor: primaryColor,
                       textColor: textColor,
                       borderColor: borderColor,
                     ),
                     const SizedBox(height: 12),
-                    _buildShadcnButton(
+                    _buildDifficultyButton(
                       label: 'Moyen',
-                      description: '12×12 grille, 20 mines',
+                      gridSize: '12×12',
+                      mineCount: 20,
+                      color: mediumColor,
                       onPressed: () => _startGame(12, 20),
-                      primaryColor: primaryColor,
                       textColor: textColor,
                       borderColor: borderColor,
                     ),
                     const SizedBox(height: 12),
-                    _buildShadcnButton(
+                    _buildDifficultyButton(
                       label: 'Difficile',
-                      description: '16×16 grille, 40 mines',
+                      gridSize: '16×16',
+                      mineCount: 40,
+                      color: hardColor,
                       onPressed: () => _startGame(16, 40),
-                      primaryColor: primaryColor,
                       textColor: textColor,
                       borderColor: borderColor,
                     ),
@@ -157,11 +162,12 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
-  Widget _buildShadcnButton({
+  Widget _buildDifficultyButton({
     required String label,
-    required String description,
+    required String gridSize,
+    required int mineCount,
+    required Color color,
     required VoidCallback onPressed,
-    required Color primaryColor,
     required Color textColor,
     required Color borderColor,
   }) {
@@ -170,43 +176,97 @@ class _StartScreenState extends State<StartScreen> {
       borderRadius: BorderRadius.circular(6),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(6),
+          color: color.withOpacity(0.05),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
+            // Indicateur de couleur
+            Container(
+              width: 4,
+              height: 50,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
+            const SizedBox(width: 16),
+            // Contenu principal
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      // Icône et texte pour la taille de la grille
+                      Icon(
+                        Icons.grid_view,
+                        size: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        gridSize,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // Icône et texte pour le nombre de mines
+                      Icon(
+                        Icons.dangerous,
+                        size: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        "$mineCount mines",
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // Flèche
             Icon(
               Icons.arrow_forward,
-              color: primaryColor,
+              color: color,
               size: 20,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _startGame(int taille, int nbMines) {
+    if (_formKey.currentState!.validate()) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => GameScreen(
+            tailleFromStartScreen: taille,
+            nbMinesFromStartScreen: nbMines,
+            // playerName: _nameController.text,
+          ),
+        ),
+      );
+    }
   }
 }
