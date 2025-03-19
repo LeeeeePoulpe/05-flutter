@@ -27,6 +27,8 @@ class CaseWidget extends StatelessWidget {
     final revealedColor = Color(0xFFE2E8F0); // Gris clair
     final markedColor = Color(0xFFF59E0B); // Orange vif
     final mineColor = Color(0xFFEF4444); // Rouge vif
+    final numberColor =
+        Color(0xFF1A1523); // Couleur unique pour tous les numéros
 
     // Déterminer l'apparence de la case
     final bool isRevealed = cell.etat == modele.Etat.decouverte;
@@ -69,7 +71,16 @@ class CaseWidget extends StatelessWidget {
                       color: Colors.white,
                       size: size * 0.6,
                     )
-                  : const SizedBox(),
+                  : isRevealed && cell.nbMinesAutour > 0
+                      ? Text(
+                          '${cell.nbMinesAutour}',
+                          style: TextStyle(
+                            color: numberColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: size * 0.5,
+                          ),
+                        )
+                      : const SizedBox(),
         ),
       ),
     );
