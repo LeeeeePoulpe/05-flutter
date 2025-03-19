@@ -124,7 +124,13 @@ class Grille {
       for (final maCase in ligne) {
         if (maCase.minee && maCase.etat == Etat.decouverte) {
           return false;
-        } else if (!maCase.minee && maCase.etat != Etat.decouverte) {
+        }
+
+        if (maCase.minee && maCase.etat != Etat.marquee) {
+          return false;
+        }
+
+        if (!maCase.minee && maCase.etat != Etat.decouverte) {
           return false;
         }
       }
@@ -153,7 +159,7 @@ class Grille {
     return finie;
   }
 
-  int getChrono() {
-    return stopwatch.elapsed.inSeconds;
+  double getChrono() {
+    return stopwatch.elapsedMilliseconds.toDouble() / 1000.0;
   }
 }

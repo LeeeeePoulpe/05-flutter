@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tp02/screens/result_screen.dart';
 import 'package:tp02/widgets/grille_demineur.dart';
@@ -21,6 +23,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   late modele.Grille grille;
+  bool _cheatModeEnabled = false; // Pour activer/désactiver le bouton de triche
 
   @override
   void initState() {
@@ -31,13 +34,42 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
+  void _revelerToutesLesCasesNonMinees() {
+    setState(() {
+
+      for (int lig = 0; lig < grille.taille; lig++) {
+        for (int col = 0; col < grille.taille; col++) {
+
+          final coord = (ligne: lig, colonne: col);
+
+          final maCase = grille.getCase(coord);
+
+          if (!maCase.minee) {
+            maCase.decouvrir();
+          }
+        }
+      }
+    });
+  }
+
   // Calcule le score basé sur le temps et la difficulté
   int _calculateScore() {
-    int baseScore = widget.nbMinesFromStartScreen * 100;
-    int chrono = grille.getChrono();
-    int timeBonus = chrono < 60 ? (60 - chrono) * 10 : 0;
-    return baseScore + timeBonus;
+    if (grille.isPerdue()) {
+      return 0;
+    }
+
+    double tempsEnSecondes = grille.getChrono();
+
+    double coeffTemps = 1000.0 *
+        exp(-tempsEnSecondes / 60.0);
+
+    double coeffDifficulte = (grille.nbMines / grille.nbCases) * grille.taille;
+
+    int score = (coeffTemps * coeffDifficulte).toInt();
+
+    return score;
   }
+
 
   void play(modele.Coup coup) {
     setState(() {
@@ -144,7 +176,23 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   ),
                 ),
-
+              if (_cheatModeEnabled)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _revelerToutesLesCasesNonMinees();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
+                    icon: Icon(Icons.auto_fix_high),
+                    label: Text('TRICHE: Révéler toutes les cases non minées'),
+                  ),
+                ),
               // Grille de jeu
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
