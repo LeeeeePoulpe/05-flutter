@@ -9,10 +9,12 @@ class GameScreen extends StatefulWidget {
   final int tailleFromStartScreen;
   final int nbMinesFromStartScreen;
   final String playerName;
+  final bool cheatModeEnabled;
 
   const GameScreen({
     required this.tailleFromStartScreen,
     required this.nbMinesFromStartScreen,
+    required this.cheatModeEnabled,
     this.playerName = '',
     Key? key,
   }) : super(key: key);
@@ -23,7 +25,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   late modele.Grille grille;
-  bool _cheatModeEnabled = false; // Pour activer/désactiver le bouton de triche
+  bool cheatModeEnabled = false;
 
   @override
   void initState() {
@@ -32,14 +34,13 @@ class _GameScreenState extends State<GameScreen> {
       taille: widget.tailleFromStartScreen,
       nbMines: widget.nbMinesFromStartScreen,
     );
+    cheatModeEnabled = widget.cheatModeEnabled;
   }
 
   void _revelerToutesLesCasesNonMinees() {
     setState(() {
-
       for (int lig = 0; lig < grille.taille; lig++) {
         for (int col = 0; col < grille.taille; col++) {
-
           final coord = (ligne: lig, colonne: col);
 
           final maCase = grille.getCase(coord);
@@ -60,8 +61,7 @@ class _GameScreenState extends State<GameScreen> {
 
     double tempsEnSecondes = grille.getChrono();
 
-    double coeffTemps = 1000.0 *
-        exp(-tempsEnSecondes / 60.0);
+    double coeffTemps = 1000.0 * exp(-tempsEnSecondes / 60.0);
 
     double coeffDifficulte = (grille.nbMines / grille.nbCases) * grille.taille;
 
@@ -69,7 +69,6 @@ class _GameScreenState extends State<GameScreen> {
 
     return score;
   }
-
 
   void play(modele.Coup coup) {
     setState(() {
@@ -176,23 +175,41 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   ),
                 ),
-              if (_cheatModeEnabled)
+              if (cheatModeEnabled)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      _revelerToutesLesCasesNonMinees();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Container(
+                    width: isLargeScreen ? 400 : double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        _revelerToutesLesCasesNonMinees();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Color(0xFFF43F5E), // Rouge
+                        backgroundColor: Color(0xFFFFF1F2), // Rouge très pâle
+                        side:
+                            BorderSide(color: Color(0xFFFECDD3)), // Rouge clair
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.auto_fix_high,
+                        size: 18,
+                      ),
+                      label: Text(
+                        'Révéler les cases non minées',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                    icon: Icon(Icons.auto_fix_high),
-                    label: Text('TRICHE: Révéler toutes les cases non minées'),
                   ),
                 ),
+
               // Grille de jeu
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),

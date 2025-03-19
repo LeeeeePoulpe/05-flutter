@@ -11,6 +11,7 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   final TextEditingController _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _cheatModeEnabled = false; // Pour activer/désactiver le bouton de triche
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _StartScreenState extends State<StartScreen> {
     final textColor = Color(0xFF1A1523); // Presque noir
     final borderColor = Colors.grey.shade200;
     final secondaryTextColor = Colors.grey.shade600;
+    final accentColor = Color(0xFF6E56CF);
 
     // Couleurs pour les niveaux de difficulté
     final easyColor = Color(0xFF4ADE80); // Vert
@@ -159,6 +161,64 @@ class _StartScreenState extends State<StartScreen> {
                       textColor: textColor,
                       borderColor: borderColor,
                     ),
+                    const SizedBox(height: 32),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: borderColor),
+                        borderRadius: BorderRadius.circular(6),
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.auto_fix_high,
+                                color: _cheatModeEnabled
+                                    ? accentColor
+                                    : secondaryTextColor,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Mode Triche',
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Activer le bouton de triche',
+                                    style: TextStyle(
+                                      color: secondaryTextColor,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Switch(
+                            value: _cheatModeEnabled,
+                            onChanged: (value) {
+                              setState(() {
+                                _cheatModeEnabled = value;
+                              });
+                            },
+                            activeColor: Colors.white,
+                            activeTrackColor: accentColor.withOpacity(0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -278,6 +338,7 @@ class _StartScreenState extends State<StartScreen> {
             tailleFromStartScreen: taille,
             nbMinesFromStartScreen: nbMines,
             playerName: _nameController.text,
+            cheatModeEnabled: _cheatModeEnabled,
           ),
         ),
       );
