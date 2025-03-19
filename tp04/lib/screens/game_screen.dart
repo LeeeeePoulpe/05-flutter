@@ -70,6 +70,11 @@ class _GameScreenState extends State<GameScreen> {
             ? Color(0xFFF43F5E)
             : primaryColor;
 
+    // Calculer la largeur maximale pour les écrans larges
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isLargeScreen = screenWidth > 600;
+    final contentWidth = isLargeScreen ? 600.0 : screenWidth;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -83,108 +88,130 @@ class _GameScreenState extends State<GameScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: textColor),
+        centerTitle: true,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Bannière d'état du jeu
-            Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: statusColor.withOpacity(0.3)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    isGameWon
-                        ? Icons.emoji_events
-                        : grille.isPerdue()
-                            ? Icons.dangerous
-                            : Icons.timer,
-                    color: statusColor,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    messageEtat(grille),
-                    style: TextStyle(
-                      color: statusColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Grille de jeu
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: GrilleDemineur(
-                grille: grille,
-                play: play,
-              ),
-            ),
-
-            // Bouton de résultats
-            AnimatedOpacity(
-              opacity: grille.isFinie() ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 300),
-              child: Padding(
+        child: Container(
+          width: contentWidth,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Bannière d'état du jeu
+              Container(
+                margin: const EdgeInsets.all(16),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                child: ElevatedButton(
-                  onPressed: grille.isFinie()
-                      ? () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ResultScreen(
-                                score: _calculateScore(),
-                                temps: grille.getChrono().toDouble(),
-                                message: isGameWon
-                                    ? "Bravo ${widget.playerName}! Vous avez gagné!"
-                                    : "Dommage ${widget.playerName}, vous avez perdu!",
-                              ),
-                            ),
-                          );
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: statusColor.withOpacity(0.3)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isGameWon
+                          ? Icons.emoji_events
+                          : grille.isPerdue()
+                              ? Icons.dangerous
+                              : Icons.timer,
+                      color: statusColor,
+                      size: 20,
                     ),
-                    elevation: 0,
+                    const SizedBox(width: 8),
+                    Text(
+                      messageEtat(grille),
+                      style: TextStyle(
+                        color: statusColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Informations du joueur
+              if (widget.playerName.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    'Joueur: ${widget.playerName}',
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.emoji_events,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        'Voir les résultats',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                ),
+
+              // Grille de jeu
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: GrilleDemineur(
+                  grille: grille,
+                  play: play,
+                ),
+              ),
+
+              // Bouton de résultats
+              AnimatedOpacity(
+                opacity: grille.isFinie() ? 1.0 : 0.0,
+                duration: Duration(milliseconds: 300),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  child: Container(
+                    width: isLargeScreen ? 400 : double.infinity,
+                    child: ElevatedButton(
+                      onPressed: grille.isFinie()
+                          ? () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ResultScreen(
+                                    score: _calculateScore(),
+                                    temps: grille.getChrono().toDouble(),
+                                    message: isGameWon
+                                        ? "Bravo ${widget.playerName}! Vous avez gagné!"
+                                        : "Dommage ${widget.playerName}, vous avez perdu!",
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
                         ),
+                        elevation: 2,
                       ),
-                    ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.emoji_events,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Voir les résultats',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

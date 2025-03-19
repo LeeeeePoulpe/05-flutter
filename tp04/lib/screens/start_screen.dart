@@ -37,12 +37,18 @@ class _StartScreenState extends State<StartScreen> {
     final mediumColor = Color(0xFFFACC15); // Jaune
     final hardColor = Color(0xFFF43F5E); // Rouge
 
+    // Calculer la largeur maximale pour les écrans larges
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isLargeScreen = screenWidth > 600;
+    final contentWidth = isLargeScreen ? 500.0 : screenWidth;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            child: Padding(
+            child: Container(
+              width: contentWidth,
               padding: const EdgeInsets.all(24.0),
               child: Form(
                 key: _formKey,
@@ -88,6 +94,7 @@ class _StartScreenState extends State<StartScreen> {
                       decoration: BoxDecoration(
                         border: Border.all(color: borderColor),
                         borderRadius: BorderRadius.circular(6),
+                        color: Colors.white,
                       ),
                       child: TextFormField(
                         controller: _nameController,
@@ -180,7 +187,14 @@ class _StartScreenState extends State<StartScreen> {
         decoration: BoxDecoration(
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(6),
-          color: color.withOpacity(0.05),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 1,
+              offset: Offset(0, 1),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -263,7 +277,7 @@ class _StartScreenState extends State<StartScreen> {
           builder: (context) => GameScreen(
             tailleFromStartScreen: taille,
             nbMinesFromStartScreen: nbMines,
-            // playerName: _nameController.text,
+            playerName: _nameController.text,
           ),
         ),
       );

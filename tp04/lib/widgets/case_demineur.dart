@@ -19,10 +19,10 @@ class CaseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Couleurs complètement nouvelles et très distinctes
-    final borderColor = Colors.grey.shade400;
+    // Couleurs plus nettes avec moins de transparence
+    final borderColor = Colors.grey.shade500;
 
-    // Couleurs très contrastées
+    // Couleurs vives sans transparence
     final nonRevealedColor = Color(0xFF6E56CF); // Violet
     final revealedColor = Color(0xFFE2E8F0); // Gris clair
     final markedColor = Color(0xFFF59E0B); // Orange vif
@@ -39,7 +39,7 @@ class CaseWidget extends StatelessWidget {
     } else {
       caseColor = isMarked ? markedColor : nonRevealedColor;
     }
-    
+
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
@@ -50,16 +50,11 @@ class CaseWidget extends StatelessWidget {
           color: caseColor,
           border: Border.all(
             color: borderColor,
-            width: 1,
+            width: 1.0,
           ),
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 2,
-              offset: Offset(0, 1),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(4),
+          // Suppression de l'ombre pour éviter l'effet de flou
+          boxShadow: [],
         ),
         child: Center(
           child: isMarked
