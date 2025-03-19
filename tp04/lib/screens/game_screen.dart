@@ -6,10 +6,12 @@ import 'package:tp02/modele/modele.dart' as modele;
 class GameScreen extends StatefulWidget {
   final int tailleFromStartScreen;
   final int nbMinesFromStartScreen;
+  final String playerName;
 
   const GameScreen({
     required this.tailleFromStartScreen,
     required this.nbMinesFromStartScreen,
+    this.playerName = '',
     Key? key,
   }) : super(key: key);
 
@@ -48,36 +50,95 @@ class _GameScreenState extends State<GameScreen> {
       return "Gagné !";
     }
     if (grille.isPerdue()) {
-      // return "Perdu !";
-      return _calculateScore().toString();
+      return "Perdu !";
     }
     return "En cours";
   }
 
   @override
   Widget build(BuildContext context) {
+    // Couleurs dans le style Shadcn
+    final backgroundColor = Colors.grey.shade50;
+    final textColor = Color(0xFF1A1523);
+    final primaryColor = Color(0xFF6E56CF);
+
+    // Déterminer la couleur d'état en fonction du statut du jeu
+    final bool isGameWon = grille.isGagnee();
+    final statusColor = isGameWon
+        ? Color(0xFF4ADE80)
+        : grille.isPerdue()
+            ? Color(0xFFF43F5E)
+            : primaryColor;
+
     return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: Text(
+          'Démineur',
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: IconThemeData(color: textColor),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              messageEtat(grille),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            // Bannière d'état du jeu
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: statusColor.withOpacity(0.3)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    isGameWon
+                        ? Icons.emoji_events
+                        : grille.isPerdue()
+                            ? Icons.dangerous
+                            : Icons.timer,
+                    color: statusColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    messageEtat(grille),
+                    style: TextStyle(
+                      color: statusColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-            GrilleDemineur(
-              grille: grille,
-              play: play,
-            ),
+
+            // Grille de jeu
             Padding(
-              padding: const EdgeInsets.all(10),
-              child: Opacity(
-                opacity: grille.isFinie() ? 1.0 : 0.0,
-                child: OutlinedButton.icon(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: GrilleDemineur(
+                grille: grille,
+                play: play,
+              ),
+            ),
+
+            // Bouton de résultats
+            AnimatedOpacity(
+              opacity: grille.isFinie() ? 1.0 : 0.0,
+              duration: Duration(milliseconds: 300),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: ElevatedButton(
                   onPressed: grille.isFinie()
                       ? () {
                           Navigator.of(context).push(
@@ -85,24 +146,44 @@ class _GameScreenState extends State<GameScreen> {
                               builder: (context) => ResultScreen(
                                 score: _calculateScore(),
                                 temps: grille.getChrono().toDouble(),
-                                message: messageEtat(grille),
+                                message: isGameWon
+                                    ? "Bravo ${widget.playerName}! Vous avez gagné!"
+                                    : "Dommage ${widget.playerName}, vous avez perdu!",
                               ),
                             ),
                           );
                         }
                       : null,
-                  style: OutlinedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.purple.withOpacity(0.3),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    elevation: 0,
                   ),
-                  icon: const Icon(Icons.arrow_right_alt),
-                  label: const Text('Voir les résultats',
-                      style: TextStyle(fontSize: 18)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.emoji_events,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Voir les résultats',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

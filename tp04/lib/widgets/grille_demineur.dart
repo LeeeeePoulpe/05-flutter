@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tp02/modele/modele.dart' as modele;
-import 'package:tp02/widgets/case_demineur.dart'; // Import the new CaseWidget
+import 'package:tp02/widgets/case_demineur.dart';
 
 class GrilleDemineur extends StatefulWidget {
   final modele.Grille grille;
@@ -17,20 +17,44 @@ class _GrilleDemineurState extends State<GrilleDemineur> {
 
   @override
   Widget build(BuildContext context) {
-    double caseSize =
-        MediaQuery.of(context).size.width * 0.8 / widget.grille.taille;
+    // Calcul de la taille des cases - augmenté pour des cases plus grandes
+    // Utilisation d'un facteur 0.9 au lieu de 0.8 pour maximiser l'espace
+    double gridSize = MediaQuery.of(context).size.width * 0.9;
+    // Limiter la taille maximale pour les grands écrans
+    if (gridSize > 500) gridSize = 500;
+
+    double caseSize = (gridSize - 16) / widget.grille.taille; // Soustraire le padding
+
+    // Couleurs dans le style Shadcn
+    final borderColor = Colors.grey.shade200;
+    final backgroundColor = Colors.white;
 
     return Container(
-      margin: const EdgeInsets.all(20),
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.8,
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        maxWidth: gridSize,
+        maxHeight: gridSize,
       ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(8),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: GridView.count(
           physics: NeverScrollableScrollPhysics(),
           crossAxisCount: widget.grille.taille,
+          mainAxisSpacing: 4, // Espacement augmenté
+          crossAxisSpacing: 4, // Espacement augmenté
+          padding: const EdgeInsets.all(0), // Pas de padding interne pour maximiser l'espace
           children: List.generate(
             widget.grille.taille * widget.grille.taille,
             (index) {
