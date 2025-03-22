@@ -93,7 +93,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   void setNewScore() {
     if (grille.isGagnee()) {
-      ref.watch(scoresListProvider.notifier).addScore(Score(
+      ref.watch(scoresListProvider.notifier).addOrUpdateScore(Score(
           playerName: widget.playerName,
           score: _calculateScore(),
           difficulty: widget.difficulty,

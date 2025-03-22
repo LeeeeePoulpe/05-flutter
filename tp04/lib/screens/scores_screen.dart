@@ -19,7 +19,6 @@ class ScoresScreenState extends ConsumerState<ScoresScreen> {
     final backgroundColor = Colors.grey.shade50;
     final textColor = Color(0xFF1A1523); // Presque noir
     final borderColor = Colors.grey.shade200;
-    final primaryColor = Color(0xFF6E56CF); // Violet Shadcn
     final secondaryTextColor = Colors.grey.shade600;
 
     final bool isNotEmpty = ref.watch(sortedScroredListProvider).isNotEmpty;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tp02/modele/score.dart';
 import 'package:tp02/provider/score_provider.dart';
+import 'package:tp02/widgets/familyDetailsDialog.dart';
 
 class ScoreItem extends ConsumerWidget {
   final String id;
@@ -38,162 +39,173 @@ class ScoreItem extends ConsumerWidget {
         ),
       ),
       color: backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Entête avec nom et rang
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Nom du joueur avec badge si premier
-                Row(
-                  children: [
-                    if (isHighlighted)
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        margin: EdgeInsets.only(right: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: Color(0xFFFFC107), width: 2),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.emoji_events,
-                              color: Color(0xFFFFC107),
-                              size: 16,
-                            ),
-                            SizedBox(width: 6),
-                            Text(
-                              'Top',
-                              style: TextStyle(
+      child: InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => familyDetailsDialog(
+              id: score.id,
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Entête avec nom et rang
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Nom du joueur avec badge si premier
+                  Row(
+                    children: [
+                      if (isHighlighted)
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          margin: EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border:
+                                Border.all(color: Color(0xFFFFC107), width: 2),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.emoji_events,
                                 color: Color(0xFFFFC107),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                size: 16,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 6),
+                              Text(
+                                'Top',
+                                style: TextStyle(
+                                  color: Color(0xFFFFC107),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      Text(
+                        score.playerName.isEmpty ? 'Anonyme' : score.playerName,
+                        style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
                       ),
+                    ],
+                  ),
+
+                  // Rang
+                  if (rank > 0) _buildRankBadge(rank),
+                ],
+              ),
+
+              SizedBox(height: 16),
+
+              // Score
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: scoreBackgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     Text(
-                      score.playerName.isEmpty ? 'Anonyme' : score.playerName,
+                      'Score',
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      '${score.score} points',
                       style: TextStyle(
                         color: textColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
                     ),
                   ],
                 ),
-
-                // Rang
-                if (rank > 0) _buildRankBadge(rank),
-              ],
-            ),
-
-            SizedBox(height: 16),
-
-            // Score
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              decoration: BoxDecoration(
-                color: scoreBackgroundColor,
-                borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
+
+              SizedBox(height: 16),
+
+              // Détails
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Score',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  // Date
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        score.formattedDate,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${score.score} points',
-                    style: TextStyle(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+
+                  // Temps
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        '${score.chrono.toStringAsFixed(1)}s',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Difficulté
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Text(
+                      score.difficulty,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-
-            SizedBox(height: 16),
-
-            // Détails
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Date
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: 16,
-                      color: Colors.grey.shade600,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      score.formattedDate,
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Temps
-                Row(
-                  children: [
-                    Icon(
-                      Icons.timer_outlined,
-                      size: 16,
-                      color: Colors.grey.shade600,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      '${score.chrono.toStringAsFixed(1)}s',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Difficulté
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: Text(
-                    score.difficulty,
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -234,5 +246,4 @@ class ScoreItem extends ConsumerWidget {
       ),
     );
   }
-
 }
