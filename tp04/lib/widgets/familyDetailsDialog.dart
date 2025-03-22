@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tp02/modele/score.dart';
 import 'package:tp02/provider/family_provider.dart';
+import 'package:tp02/provider/scores_list_provider.dart';
 
 class familyDetailsDialog extends ConsumerWidget {
   final String id;
@@ -198,28 +199,62 @@ class familyDetailsDialog extends ConsumerWidget {
 
             SizedBox(height: 24),
 
-            // Bouton fermer
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: accentColor,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: ElevatedButton(
+                    onPressed: () => {
+                      ref
+                          .watch(scoresListProvider.notifier)
+                          .removeScore(playerScore.id),
+                      Navigator.of(context).pop(),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      'Supprimer',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
-                child: Text(
-                  'Fermer',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                SizedBox(
+                  height: 16,
+                  width: 16,
+                ),
+                SizedBox(
+                  width: 120,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accentColor,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      'Fermer',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
+              ],
+            )
           ],
         ),
       ),
