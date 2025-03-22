@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tp02/screens/game_screen.dart';
+import 'package:tp02/screens/scores_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
@@ -162,63 +163,28 @@ class _StartScreenState extends State<StartScreen> {
                       borderColor: borderColor,
                     ),
                     const SizedBox(height: 32),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: borderColor),
-                        borderRadius: BorderRadius.circular(6),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.auto_fix_high,
-                                color: _cheatModeEnabled
-                                    ? accentColor
-                                    : secondaryTextColor,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Mode Triche',
-                                    style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Activer le bouton de triche',
-                                    style: TextStyle(
-                                      color: secondaryTextColor,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Switch(
-                            value: _cheatModeEnabled,
-                            onChanged: (value) {
-                              setState(() {
-                                _cheatModeEnabled = value;
-                              });
-                            },
-                            activeColor: Colors.white,
-                            activeTrackColor: accentColor.withOpacity(0.5),
-                          ),
-                        ],
+
+                    // Section options
+                    Text(
+                      'Options',
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    _buildCheatModeButton(
+                        textColor: textColor,
+                        borderColor: borderColor,
+                        accentColor: accentColor,
+                        secondaryTextColor: secondaryTextColor),
+                    const SizedBox(height: 12),
+                    _buildScoreButton(
+                        textColor: textColor,
+                        borderColor: borderColor,
+                        accentColor: accentColor,
+                        secondaryTextColor: secondaryTextColor),
                   ],
                 ),
               ),
@@ -330,6 +296,139 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
+  Widget _buildCheatModeButton({
+    required Color textColor,
+    required Color borderColor,
+    required Color accentColor,
+    required Color secondaryTextColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.auto_fix_high,
+                color: _cheatModeEnabled ? accentColor : secondaryTextColor,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mode Triche',
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    'Activer le bouton de triche',
+                    style: TextStyle(
+                      color: secondaryTextColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Switch(
+            value: _cheatModeEnabled,
+            onChanged: (value) {
+              setState(() {
+                _cheatModeEnabled = value;
+              });
+            },
+            activeColor: Colors.white,
+            activeTrackColor: accentColor.withOpacity(0.5),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScoreButton({
+    required Color textColor,
+    required Color borderColor,
+    required Color accentColor,
+    required Color secondaryTextColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ScoresScreen(),
+            ),
+          );
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.leaderboard,
+                  color: accentColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tableau des scores',
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Voir les meilleurs scores',
+                      style: TextStyle(
+                        color: secondaryTextColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: secondaryTextColor,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _startGame(int taille, int nbMines) {
     if (_formKey.currentState!.validate()) {
       Navigator.of(context).push(
@@ -339,6 +438,11 @@ class _StartScreenState extends State<StartScreen> {
             nbMinesFromStartScreen: nbMines,
             playerName: _nameController.text,
             cheatModeEnabled: _cheatModeEnabled,
+            difficulty: taille == 8
+                ? 'Facile'
+                : taille == 12
+                    ? 'Moyen'
+                    : 'Difficile',
           ),
         ),
       );

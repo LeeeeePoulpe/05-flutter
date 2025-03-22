@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tp02/screens/scores_screen.dart';
 import 'package:tp02/screens/start_screen.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -20,7 +21,9 @@ class ResultScreen extends StatelessWidget {
     final textColor = Color(0xFF1A1523); // Presque noir
     final borderColor = Colors.grey.shade200;
     final primaryColor = Color(0xFF6E56CF); // Violet Shadcn
-    final primaryBlack = Color(0xFF1A1523); // Noir Shadcn
+    final primaryBlack = Color(0xFF1A1523); // Noir Shadc
+    final secondaryTextColor = Colors.grey.shade600;
+    final accentColor = Color(0xFF6E56CF);
 
     // Déterminer si c'est une victoire ou une défaite
     final bool isVictory = message.toLowerCase().contains('gagné') ||
@@ -224,6 +227,14 @@ class ResultScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  _buildScoreButton(
+                    textColor: textColor,
+                    borderColor: borderColor,
+                    accentColor: accentColor,
+                    secondaryTextColor: secondaryTextColor,
+                    context: context,
+                  ),
                 ],
               ),
             ),
@@ -232,4 +243,78 @@ class ResultScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildScoreButton({
+    required Color textColor,
+    required Color borderColor,
+    required Color accentColor,
+    required Color secondaryTextColor,
+    required BuildContext context,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ScoresScreen(),
+            ),
+          );
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.leaderboard,
+                  color: accentColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tableau des scores',
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Voir les meilleurs scores',
+                      style: TextStyle(
+                        color: secondaryTextColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: secondaryTextColor,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }

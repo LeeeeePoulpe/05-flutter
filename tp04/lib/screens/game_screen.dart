@@ -1,20 +1,25 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tp02/modele/score.dart';
+import 'package:tp02/provider/scores_list_provider.dart';
 import 'package:tp02/screens/result_screen.dart';
 import 'package:tp02/widgets/grille_demineur.dart';
 import 'package:tp02/modele/modele.dart' as modele;
 
-class GameScreen extends StatefulWidget {
+class GameScreen extends ConsumerStatefulWidget {
   final int tailleFromStartScreen;
   final int nbMinesFromStartScreen;
   final String playerName;
   final bool cheatModeEnabled;
+  final String difficulty;
 
   const GameScreen({
     required this.tailleFromStartScreen,
     required this.nbMinesFromStartScreen,
     required this.cheatModeEnabled,
+    required this.difficulty,
     this.playerName = '',
     Key? key,
   }) : super(key: key);
@@ -23,7 +28,7 @@ class GameScreen extends StatefulWidget {
   _GameScreenState createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends ConsumerState<GameScreen> {
   late modele.Grille grille;
   bool cheatModeEnabled = false;
 
@@ -84,6 +89,17 @@ class _GameScreenState extends State<GameScreen> {
       return "Perdu !";
     }
     return "En cours";
+  }
+
+  void setNewScore() {
+    if (grille.isGagnee()) {
+      ref.watch(scoresListProvider.notifier).addScore(Score(
+          playerName: widget.playerName,
+          score: _calculateScore(),
+          difficulty: widget.difficulty,
+          chrono: grille.getChrono(),
+          date: DateTime.now()));
+    }
   }
 
   @override
@@ -231,6 +247,7 @@ class _GameScreenState extends State<GameScreen> {
                     child: ElevatedButton(
                       onPressed: grille.isFinie()
                           ? () {
+                              setNewScore();
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => ResultScreen(
