@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tp02/modele/score_list.dart';
-import 'package:tp02/modele/score.dart';
+import 'package:demineur_follmih/modele/score_list.dart';
+import 'package:demineur_follmih/modele/score.dart';
 
 final scoresListProvider = StateNotifierProvider<ScoresListNotifier, ScoreList>(
     (ref) => ScoresListNotifier());

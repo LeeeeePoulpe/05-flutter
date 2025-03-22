@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tp02/modele/score.dart';
-import 'package:tp02/provider/scores_list_provider.dart';
-import 'package:tp02/screens/result_screen.dart';
-import 'package:tp02/widgets/grille_demineur.dart';
-import 'package:tp02/modele/modele.dart' as modele;
+import 'package:demineur_follmih/modele/score.dart';
+import 'package:demineur_follmih/provider/scores_list_provider.dart';
+import 'package:demineur_follmih/screens/result_screen.dart';
+import 'package:demineur_follmih/widgets/grille_demineur.dart';
+import 'package:demineur_follmih/modele/modele.dart' as modele;
 
 class GameScreen extends ConsumerStatefulWidget {
   final int tailleFromStartScreen;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tp02/modele/modele.dart' as modele;
+import 'package:demineur_follmih/modele/modele.dart' as modele;
 
 class CaseWidget extends StatelessWidget {
   final modele.Case cell;

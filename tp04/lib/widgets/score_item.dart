@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tp02/modele/score.dart';
-import 'package:tp02/provider/score_provider.dart';
-import 'package:tp02/widgets/familyDetailsDialog.dart';
+import 'package:demineur_follmih/modele/score.dart';
+import 'package:demineur_follmih/provider/score_provider.dart';
+import 'package:demineur_follmih/widgets/familyDetailsDialog.dart';
 
 class ScoreItem extends ConsumerWidget {
   final String id;

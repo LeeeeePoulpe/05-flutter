@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tp02/screens/game_screen.dart';
-import 'package:tp02/screens/scores_screen.dart';
+import 'package:demineur_follmih/screens/game_screen.dart';
+import 'package:demineur_follmih/screens/scores_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);

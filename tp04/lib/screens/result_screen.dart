@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tp02/screens/scores_screen.dart';
-import 'package:tp02/screens/start_screen.dart';
+import 'package:demineur_follmih/screens/scores_screen.dart';
+import 'package:demineur_follmih/screens/start_screen.dart';
 
 class ResultScreen extends StatelessWidget {
   final int score;

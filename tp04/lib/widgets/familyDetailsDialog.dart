@@ -1,9 +1,8 @@
-// Dans un fichier family_details_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tp02/modele/score.dart';
-import 'package:tp02/provider/family_provider.dart';
-import 'package:tp02/provider/scores_list_provider.dart';
+import 'package:demineur_follmih/modele/score.dart';
+import 'package:demineur_follmih/provider/family_provider.dart';
+import 'package:demineur_follmih/provider/scores_list_provider.dart';
 
 class FamilyDetailsDialog extends ConsumerWidget {
   final String id;

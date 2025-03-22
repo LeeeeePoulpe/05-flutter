@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tp02/modele/score.dart';
-import 'package:tp02/provider/scores_list_provider.dart';
-import 'package:tp02/provider/sorted_score_list_provider.dart';
-import 'package:tp02/widgets/score_item.dart';
+import 'package:demineur_follmih/modele/score.dart';
+import 'package:demineur_follmih/provider/scores_list_provider.dart';
+import 'package:demineur_follmih/provider/sorted_score_list_provider.dart';
+import 'package:demineur_follmih/widgets/score_item.dart';
 
 class ScoresList extends ConsumerWidget {
   const ScoresList({super.key});

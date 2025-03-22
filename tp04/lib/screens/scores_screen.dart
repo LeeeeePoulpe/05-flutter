@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tp02/provider/sorted_score_list_provider.dart';
-import 'package:tp02/widgets/scores_list.dart';
+import 'package:demineur_follmih/provider/sorted_score_list_provider.dart';
+import 'package:demineur_follmih/widgets/scores_list.dart';
 
 class ScoresScreen extends ConsumerStatefulWidget {
   const ScoresScreen({super.key});

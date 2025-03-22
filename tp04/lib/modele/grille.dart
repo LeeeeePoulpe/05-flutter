@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:tp02/modele/case.dart';
-import 'package:tp02/modele/coup.dart';
+import 'package:demineur_follmih/modele/case.dart';
+import 'package:demineur_follmih/modele/coup.dart';
 
 /// [Grille] de démineur
 class Grille {

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:tp02/modele/score.dart';
+import 'package:demineur_follmih/modele/score.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScoreList {

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tp02"
+    namespace = "com.example.demineur_follmih"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

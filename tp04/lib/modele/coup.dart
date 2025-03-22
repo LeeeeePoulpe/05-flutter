@@ -1,4 +1,4 @@
-import 'package:tp02/modele/case.dart';
+import 'package:demineur_follmih/modele/case.dart';
 
 /// [Action] qu'on peut jouer sur une [Case]
 enum Action { decouvrir, marquer }

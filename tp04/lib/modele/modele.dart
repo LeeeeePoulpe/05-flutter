@@ -1,3 +1,3 @@
-export 'package:tp02/modele/case.dart';
-export 'package:tp02/modele/coup.dart';
-export 'package:tp02/modele/grille.dart';
+export 'package:demineur_follmih/modele/case.dart';
+export 'package:demineur_follmih/modele/coup.dart';
+export 'package:demineur_follmih/modele/grille.dart';
