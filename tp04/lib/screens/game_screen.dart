@@ -42,6 +42,24 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     cheatModeEnabled = widget.cheatModeEnabled;
   }
 
+  // Calcule le nombre de mines restantes (non marquées)
+  int _getMinesRestantes() {
+    int casesMarquees = 0;
+
+    for (int lig = 0; lig < grille.taille; lig++) {
+      for (int col = 0; col < grille.taille; col++) {
+        final coord = (ligne: lig, colonne: col);
+        final maCase = grille.getCase(coord);
+
+        if (maCase.etat == modele.Etat.marquee) {
+          casesMarquees++;
+        }
+      }
+    }
+
+    return grille.nbMines - casesMarquees;
+  }
+
   void _revelerToutesLesCasesNonMinees() {
     setState(() {
       for (int lig = 0; lig < grille.taille; lig++) {
@@ -143,42 +161,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Bannière d'état du jeu
-              Container(
-                margin: const EdgeInsets.all(16),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: statusColor.withOpacity(0.3)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isGameWon
-                          ? Icons.emoji_events
-                          : grille.isPerdue()
-                              ? Icons.dangerous
-                              : Icons.timer,
-                      color: statusColor,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      messageEtat(grille),
-                      style: TextStyle(
-                        color: statusColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
 
-              // Informations du joueur
+              // Informations sur le joueur
               if (widget.playerName.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
@@ -191,6 +175,91 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     ),
                   ),
                 ),
+              // Bannière d'état du jeu et compteur de mines dans une ligne
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Bannière d'état du jeu
+                    Container(
+                      width: 140, // Largeur fixe plus petite
+                      margin: const EdgeInsets.only(right: 8, bottom: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: statusColor.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            isGameWon
+                                ? Icons.emoji_events
+                                : grille.isPerdue()
+                                    ? Icons.dangerous
+                                    : Icons.timer,
+                            color: statusColor,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            messageEtat(grille),
+                            style: TextStyle(
+                              color: statusColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Compteur de mines restantes
+                    Container(
+                      width: 140, // Largeur fixe plus petite
+                      margin: const EdgeInsets.only(left: 8, bottom: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.flag,
+                            color: Color(0xFFF59E0B), // Couleur ambre
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Mines: ${_getMinesRestantes()}',
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
               if (cheatModeEnabled)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
