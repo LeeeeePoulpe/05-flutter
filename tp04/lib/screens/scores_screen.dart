@@ -57,38 +57,6 @@ class ScoresScreenState extends ConsumerState<ScoresScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Bannière d'état
-                if (!isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 24),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: primaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: primaryColor.withOpacity(0.3)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: primaryColor,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Aucun score enregistré',
-                          style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
                 // Liste des scores ou message
                 Expanded(
                   child: isNotEmpty
